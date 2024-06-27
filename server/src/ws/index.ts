@@ -18,14 +18,13 @@ export default (server: Server) => {
             logger.info(`DISCONNECTED::WEBSOCKET - code: ${code}, cause: ${data}`);
         });
         connection.on('message', async (stream) => {
-            let message;
             try {
-                message = JSON.parse(stream.toString());
-                if (message.type == 'authenticate') {
+                const message = JSON.parse(stream.toString());
+                if (message.type === 'authenticate') {
                     const jwtRst: JwtRst = await jwt.verify(message.token, false);
                     const sub: string = jwtRst.sub;
                     if (!jwtRst.verified) {
-                        let cause: string = `자격 오류로 연결 거부 - user: ${jwtRst.sub}`;
+                        let cause: string = `토큰 검증 오류로 연결 거부 - user: ${jwtRst.sub}`;
                         connection.close(4002, cause);
                     } else {
                         oldConnectionCheck(sub);
