@@ -92,8 +92,8 @@ export default {
             const userId: string = req.userId || '';
             const result = await Room.findOneAndDelete({ _id: targetRoomId, owner: userId });
             if (result) {
-                return ResponseMessage.Ok(res);
                 broadcast();
+                return ResponseMessage.Ok(res);
             } else
                 return ResponseMessage.BadRequest(res);
         } catch (error) {
