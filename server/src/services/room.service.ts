@@ -68,14 +68,35 @@ export default {
             if (!targetRoom)
                 return ResponseMessage.BadRequest(res);
             else {
-                let joinRoom = targetRoom.owner.toString() === userId
-                    ? await Room.findOne({ _id: targetRoomId })
+                const isMine: boolean = targetRoom.owner.toString() === userId;
+                const alreadyJoin: boolean = targetRoom.participants ? true : false;
+                let joinRoom;
+
+                // 내 방 인 경우
+                if (isMine)
+                    joinRoom = await Room.findOne({ _id: targetRoomId })
                         .populate('owner', '-password -createdAt -updatedAt')
                         .populate('participants', '-password -createdAt -updatedAt')
                         .select(['-updatedAt', '-createdAt'])
-                    : await Room.findOneAndUpdate({ _id: targetRoomId }, { status: 'chatting', participants: userId }, { new: true }).select(['-updatedAt', '-createdAt']);
 
-                broadcast();
+                // 내 방 아님 & 이미 참가
+                if (!joinRoom && alreadyJoin)
+                    joinRoom = await Room.findOne({ _id: targetRoomId })
+                        .populate('owner', '-password -createdAt -updatedAt')
+                        .populate('participants', '-password -createdAt -updatedAt')
+                        .select(['-updatedAt', '-createdAt']);
+
+                // 내 방 아님 & 신규 참여
+                else if ((!joinRoom && !alreadyJoin))
+                    joinRoom = await Room.findOneAndUpdate({ _id: targetRoomId }, { status: 'chatting', participants: userId }, { new: true })
+                        .populate('owner', '-password -createdAt -updatedAt')
+                        .populate('participants', '-password -createdAt -updatedAt')
+                        .select(['-updatedAt', '-createdAt']);
+
+                // 신규 참여자가 발생했으면
+                if (!isMine && !alreadyJoin)
+                    broadcast();
+
                 return ResponseMessage.Ok_item(res, joinRoom);
             }
 
