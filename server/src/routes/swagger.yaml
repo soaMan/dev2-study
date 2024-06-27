@@ -1,0 +1,264 @@
+swagger: "2.0"
+info:
+  version: "0.0.1"
+  title: chatapp
+host: 172.20.60.200:3000
+basePath: /
+schemes:
+  - http
+  - https
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
+    description: |
+     The following syntax must be used in the 'Authorization' header :
+  
+         Bearer xxxxxx.yyyyyyy.zzzzzz
+
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+
+  /auth/login:
+    post:
+      tags: 
+        - Auth
+      description: "로그인"
+      parameters:
+        - name: authentication
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/Authentication"
+      responses:
+        "200":
+          description: "Success"
+          schema:
+            $ref: "#/definitions/AuthenticationResponse"
+        "403":
+          description: "Access Denied"
+          schema:
+            $ref: "#/definitions/Error"
+
+  /auth/register:
+    post:
+      tags: 
+        - Auth
+      description: "가입"
+      parameters:
+        - name: authentication
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/AuthenticationNew"
+      responses:
+        "200":
+          description: "Success"
+          schema:
+            $ref: "#/definitions/AuthenticationResponse"
+        "403":
+          description: "Access Denied"
+          schema:
+            $ref: "#/definitions/Error"
+
+  /auth/refresh:
+    post:
+      tags: 
+        - Auth
+      description: "액세스 토큰 갱신"
+      security:
+        - Bearer: []
+      parameters:
+        # - in: header
+        #   name: x-refreshToken
+        #   schema:
+        #     type: string
+        #   required: true
+      responses:
+        "200":
+          description: "Success"
+          schema:
+            $ref: "#/definitions/AuthenticationResponse"
+        "403":
+          description: "Access Denied"
+          schema:
+            $ref: "#/definitions/Error"
+
+  /room:
+    get:
+      tags: 
+        - Room
+      description: "대화방 목록"
+      security:
+        - Bearer: []
+      responses:
+        "200":
+          description: "Success"
+          schema:
+            $ref: "#/definitions/RoomList"
+        "403":
+          description: "Access Denied"
+          schema:
+            $ref: "#/definitions/Error"
+    post:
+      tags: 
+        - Room
+      description: "대화방 생성"
+      security:
+        - Bearer: []
+      parameters:
+        - name: new room
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/NewRoom"
+      responses:
+        "200":
+          description: "Success"
+          schema:
+            type: object
+            name: item
+              $ref: "#/definitions/Room"
+        "403":
+          description: "Access Denied"
+          schema:
+            $ref: "#/definitions/Error"
+  /room/{roomId}:
+    get:
+      tags: 
+        - Room
+      description: "대화방 참여"
+      security:
+        - Bearer: []
+      parameters:
+        - name: roomId
+          in: path
+          required: true
+          type: string
+      responses:
+        "200":
+          description: "Success"
+          schema:
+            $ref: "#/definitions/ChatList"
+        "403":
+          description: "Access Denied"
+          schema:
+            $ref: "#/definitions/Error"
+    delete:
+      tags: 
+        - Room
+      description: "대화방 삭제"
+      security:
+        - Bearer: []
+      parameters:
+        - name: roomId
+          in: path
+          required: true
+          type: string
+      responses:
+        "200":
+          description: "Success"
+          schema:
+            $ref: "#/definitions/Response"
+        "403":
+          description: "Access Denied"
+          schema:
+            $ref: Response
+
+definitions:
+  AuthenticationNew:
+    type: object
+    properties:
+      email:
+        type: string
+        example: "aaa@aaa.com"
+      password:
+        type: string
+        example: "12345"
+      name:
+        type: string
+        example: "아아아"
+  Authentication:
+    type: object
+    properties:
+      email:
+        type: string
+        example: "aaa@aaa.com"
+      password:
+        type: string
+        example: "12345"
+  AuthenticationResponse:
+    type: object
+    properties:
+      messages: 
+        type: string
+      item:
+        $ref: '#/definitions/Token'
+
+  NewRoom:
+    type: object
+    properties:
+      name:
+        type: string
+        example: "테스트 방"
+  Room:
+    type: object
+    properties:
+      roomId:
+        type: string
+        example: "1234567890"
+      name:
+        type: string
+        example: "테스트 방"
+  RoomList:
+    type: object
+    properties:
+      messages: 
+        type: string
+      items:
+        type: array
+        items:
+          $ref: '#/definitions/Room'
+
+  Chat:
+    type: object
+    properties:
+      talker:
+        type: string
+        example: "1234567890"
+      message:
+        type: string
+        example: "반가워요"
+  ChatList:
+    type: object
+    properties:
+      messages: 
+        type: string
+      items:
+        type: array
+        items:
+          $ref: '#/definitions/Chat'
+
+  Response:
+    type: object
+    properties:
+      messages:
+        type: string
+
+  Token:
+    type: object
+    properties:
+      accessToken:
+        type: string
+      refreshToken:
+        type: string
+
+  Error:
+    type: object
+    properties:
+      message:
+        type: string

@@ -1,0 +1,60 @@
+* chatchat-web
+
+npm install -g @angular/cli
+
+ng new chatchat-web
+
+npm install bootstrap
+
+ng add @ng-bootstrap/ng-bootstrap
+
+ng generate component chatcha
+
+
+
+
+
+* mqtt - mosquito
+docker run -it -d --name mos -p 1883:1883 \
+eclipse-mosquitto:2
+docker cp mosquitto.conf mos1:/mosquitto/config/mosquitto.conf
+
+docker exec -it mos1 sh
+# create pwd file, user
+mosquitto_passwd -c /mosquitto/passwd_file user_name
+# add user
+mosquitto_passwd -b /mosquitto/passwd_file user_name password
+# del user
+mosquitto_passwd -D /mosquitto/passwd_file user_name
+
+cd /mosquitto/config/
+vi mosquitto.conf
+
+allow_anonymous false
+listener 1883 0.0.0.0
+
+docker restart mos1
+docker logs -f mos1
+
+
+
+
+
+* redis
+docker run --name redis --restart=always -p 6379:6379 -d \
+-v ~/data/redis.conf:/etc/redis/redis.conf \
+-v ~/data/redis:/data \
+redis:latest redis-server /etc/redis/redis.conf
+
+
+
+
+* mongodb
+docker run --name mongodb -v ~/data/mongo:/data/db -d \
+-e MONGO_INITDB_ROOT_USERNAME=admin \
+-e MONGO_INITDB_ROOT_PASSWORD=admin1234 \
+-p 27017:27017 mongo
+
+docker exec -it mongodb mongosh
+show databases;
+use admin;

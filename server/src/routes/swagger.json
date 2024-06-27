@@ -1,0 +1,211 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "Chatapp API",
+        "description": "Open API docs with Swagger",
+        "license": {
+            "name": "MIT",
+            "url": "http://localhost:3000"
+        }
+    },
+    "host": "localhost:3000",
+    "basePath": "/",
+    "schemes": [
+        "http"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/auth/register": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "가입",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "가입",
+                        "schema": {
+                            "$ref": "#/definitions/user"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "message": "Register Success"
+                    },
+                    "404": {
+                        "message": "Failed. Bad Request"
+                    }
+                }
+            }
+        },
+        "/auth/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "로그인",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "로그인",
+                        "schema": {
+                            "$ref": "#/definitions/login"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "message": "Register Success"
+                    },
+                    "404": {
+                        "message": "Failed. Bad Request"
+                    }
+                }
+            }
+        },
+        "/room": {
+            "get": {
+                "tags": [
+                    "Room"
+                ],
+                "summary": "대화방 목록 조회",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "email",
+                        "description": "select user",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "message": "Register Success"
+                    },
+                    "404": {
+                        "message": "Failed. Bad Request"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Room"
+                ],
+                "summary": "대화방 생성",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "email",
+                        "description": "select user",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "message": "Register Success"
+                    },
+                    "404": {
+                        "message": "Failed. Bad Request"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Room"
+                ],
+                "summary": "대화방 삭제",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "email",
+                        "description": "select user",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "message": "Register Success"
+                    },
+                    "404": {
+                        "message": "Failed. Bad Request"
+                    }
+                }
+            }
+        },
+        "/chat": {
+            "get": {
+                "tags": [
+                    "Chat"
+                ],
+                "summary": "대화방 대화 목록",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "email",
+                        "description": "select user",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "message": "Register Success"
+                    },
+                    "404": {
+                        "message": "Failed. Bad Request"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "user": {
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "login": {
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "jwt"
+            }
+        }
+    }
+}
