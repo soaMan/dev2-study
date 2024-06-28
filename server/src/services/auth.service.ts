@@ -54,7 +54,8 @@ export default {
                     const refreshToekn: string = await authenticationService.generateRefreshToken(user);
                     redis_cli.setAccessToken(user._id.toString(), accessToken);
                     redis_cli.setRefreshToken(user._id.toString(), refreshToekn);
-                    ResponseMessage.Ok_item(res, { accessToken, refreshToekn });
+                    const iam = await User.findOne({ email: user.email }).select(['-password', '-createdAt', '-updatedAt']);
+                    ResponseMessage.Ok_item(res, { name:iam?.name, email:iam?.email, accessToken, refreshToekn });
                 }
             })(req, res);
 
